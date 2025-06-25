@@ -25,6 +25,8 @@ if FIREBASE_CRED_B64:
     firebase_cert_dict = json.loads(base64.b64decode(FIREBASE_CRED_B64))
     cred = credentials.Certificate(firebase_cert_dict)
     initialize_app(cred, {'storageBucket': 'sutrulaago-8d19a.appspot.com'})  # replace with actual
+    db = firestore.client()
+
 else:
     raise Exception("FIREBASE_CREDENTIALS_B64 environment variable not set")
 
@@ -81,11 +83,6 @@ def chat():
 # travellog updates
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
-
-# Initialize Firebase (remove storage)
-cred = credentials.Certificate(r"C:\Users\mokit\Downloads\final_after_hackathon\SutrulaaGO4\sutrulaago-8d19a-firebase-adminsdk-fbsvc-17a7005c9c.json")
-firebase_app = initialize_app(cred)
-db = firestore.client()
 
 app.secret_key = 'AIzaSyBTSqnDhr7assffH0B5Qn5NEcyg0YUSNMM'
 # Ensure the credentials file exists
