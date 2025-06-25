@@ -8,6 +8,9 @@ from flask import session
 from firebase_admin import credentials, initialize_app, storage, firestore
 import datetime
 from werkzeug.utils import secure_filename
+import base64
+import json
+from firebase_admin import credentials, initialize_app
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,6 +18,15 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 app = Flask(__name__)
+
+FIREBASE_CRED_B64 = os.environ.get("FIREBASE_CREDENTIALS_B64")
+
+if FIREBASE_CRED_B64:
+    firebase_cert_dict = json.loads(base64.b64decode(FIREBASE_CRED_B64))
+    cred = credentials.Certificate(firebase_cert_dict)
+    initialize_app(cred, {'storageBucket': 'sutrulaago-8d19a.appspot.com'})  # replace with actual
+else:
+    raise Exception("FIREBASE_CREDENTIALS_B64 environment variable not set")
 
 # weather
 WEATHER_API_KEY = 'adf564d37b67d84e1e5e8d04f279f0aa'
