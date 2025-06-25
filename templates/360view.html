@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Tour Experience</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/360view.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="virtual-tour-container">
+        <h1 class="tour-title">AR சுற்றுலா அனுபவம் <i class="fas fa-binoculars"></i></h1>
+        <div class="map-wrapper">
+            <iframe 
+                src="{% if city == 'chennai' %}https://www.google.com/maps/embed?pb=!4v1745862853151!6m8!1m7!1sCAoSF0NJSE0wb2dLRUlDQWdJRGU5by1sN0FF!2m2!1d13.04995260460426!2d80.28240257341209!3f96.97178701209286!4f0.04208302794873475!5f0.7820865974627469{% elif city == 'madurai' %}https://www.google.com/maps/embed?pb=!4v1746028563096!6m8!1m7!1sCAoSF0NJSE0wb2dLRUlDQWdJREV3Wk9MNFFF!2m2!1d9.91950446357184!2d78.11934176348691!3f100!4f10!5f0.7820865974627469{% elif city == 'salem' %}https://www.google.com/maps/embed?pb=!4v1745865047171!6m8!1m7!1sCAoSF0NJSE0wb2dLRUlDQWdJRFVqcW5jendF!2m2!1d11.79498390243022!2d78.20037781371047!3f343.88479253732424!4f-3.483697866666489!5f0.7820865974627469{% endif %}" 
+                allowfullscreen 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade"
+                class="immersive-frame">
+            </iframe>
+        </div>
+    </div>
+    <!-- Add city-specific bottom image here -->
+    <div style="width:100%;text-align:center;margin-top:2rem;">
+        <!-- Instruction text above the bottom image -->
+        <div style="width:100%;text-align:center;margin-top:2rem;">
+            <p style="font-size:1.2rem;color:#208DA5;font-weight:bold;margin-bottom:1rem;">
+                AR அனுபவத்தை சிறப்பாக பெற, கீழே உள்ள QR குறியீட்டை ஸ்கேன் செய்யவும்!
+            </p>
+            <img src="{{ url_for('static', filename='images/' + city + '_bottom.jpeg') }}" alt="{{ city }} bottom image" style="max-width:400px;height:auto;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.12);" />
+        </div>
+        <!-- Audio Player -->
+    </div>
+    <audio id="backgroundAudio" loop>
+        <source src="{% if city == 'chennai' %}/static/chennai.mp3{% elif city == 'madurai' %}/static/madurai.mp3{% elif city == 'salem' %}/static/salem.mp3{% else %}/static/salem.mp3{% endif %}" type="audio/mpeg">
+        உங்கள் உலாவி இந்த ஆடியோ அம்சத்தை ஆதரிக்கவில்லை.
+    </audio>
+    
+    <!-- Glass-Style Audio Control -->
+    <div class="audio-control" onclick="toggleAudio()">
+        <i id="audioIcon" class="fas fa-volume-mute"></i>
+    </div>
+
+<script>
+    const audio = document.getElementById('backgroundAudio');
+    const icon = document.getElementById('audioIcon');
+
+    document.addEventListener('click', () => {
+        audio.play().catch((error) => {
+            console.log('Audio play prevented:', error);
+        });
+    }, { once: true });
+
+    function toggleAudio() {
+        if (audio.paused) {
+            audio.play();
+            icon.classList.remove('fa-volume-mute');
+            icon.classList.add('fa-volume-up');
+        } else {
+            audio.pause();
+            icon.classList.remove('fa-volume-up');
+            icon.classList.add('fa-volume-mute');
+        }
+    }
+</script>
+
+<style>
+    /* General page style */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(#dbefff, #ffffff);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    .virtual-tour-container {
+        text-align: center;
+        padding: 20px;
+    }
+    .tour-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    .map-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .immersive-frame {
+        width: 90%;
+        height: 500px;
+        border: 0;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Audio Control Button */
+    .audio-control {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #00f0ff, #00d0ff);
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .audio-control:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+    }
+
+    .audio-control i {
+        color: white;
+        font-size: 30px;
+    }
+
+
+</style>
+
+</body>
+</html>

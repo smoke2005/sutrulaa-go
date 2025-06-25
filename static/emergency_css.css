@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #fffaf0; /* Warm white */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.location-header {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#getLocationBtn {
+    padding: 10px 20px;
+    background-color: #8B4513; /* Rich brown */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.service-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(139, 69, 19, 0.1); /* Brown tinted shadow */
+}
+
+.icon-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.icon-header i {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.place-item {
+    border-top: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 5px;
+    background-color: #A0522D; /* Earthy brown */
+    color: white;
+    border-radius: 3px;
+    text-decoration: none;
+}

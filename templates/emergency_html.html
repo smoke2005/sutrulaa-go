@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>அவசர சேவைகள்</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='emergency_css.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0f7fa 0%, #48c6ef 100%);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+        .container {
+            background: #ffffffcc;
+            border-radius: 18px;
+            max-width: 1500px;
+            margin: 40px auto;
+            padding: 32px 24px;
+            box-shadow: 0 4px 24px #b2ebf2;
+        }
+        h1 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+        .location-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        #getLocationBtn {
+            background: #48c6ef;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #b2ebf2;
+            transition: background 0.2s;
+        }
+        #getLocationBtn:hover {
+            background: #0097a7;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .service-card {
+            background: #b2ebf2;
+            border: 2px solid #48c6ef;
+            border-radius: 14px;
+            padding: 18px 14px;
+            box-shadow: 0 2px 8px #b2ebf2;
+        }
+        .icon-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .icon-header i {
+            color: #0097a7;
+            font-size: 1.7rem;
+        }
+        .icon-header h3 {
+            color: #00796b;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .place-item {
+            background: #e0f7fa;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 4px #b2ebf2;
+        }
+        .place-item h4 {
+            margin: 0 0 4px 0;
+            color: #00796b;
+            font-size: 1.05rem;
+        }
+        .place-item p {
+            margin: 0 0 6px 0;
+            color: #555;
+            font-size: 0.97rem;
+        }
+        .action-btn {
+            display: inline-block;
+            margin-right: 8px;
+            color: #fff;
+            background: #48c6ef;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            text-align: center;
+            line-height: 32px;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        .action-btn:hover {
+            background: #0097a7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="google_translate_element" style="float:right; margin: 10px;"></div>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'ta',
+          includedLanguages: 'en,ta',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+        <h1>அவசர சேவைகள் அருகில்</h1>
+        <div class="location-header">
+            <button id="getLocationBtn"><i class="fas fa-map-marker-alt"></i> தற்போதைய இடத்தை பயன்படுத்தவும்</button>
+        </div>
+        <div id="servicesGrid" class="grid-container"></div>
+    </div>
+
+    <script>
+        document.getElementById('getLocationBtn').addEventListener('click', getLocation);
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("இந்த உலாவியில் நிலைமையியல் ஆதரவு இல்லை.");
+            }
+        }
+
+        function showPosition(position) {
+            fetch('/get_emergency_services', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                })
+            })
+            .then(response => response.json())
+            .then(updateServicesGrid);
+        }
+
+        function updateServicesGrid(services) {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = Object.entries(services).map(([type, places]) => `
+                <div class="service-card">
+                    <div class="icon-header">
+                        <i class="${getIconClass(type)}"></i>
+                        <h3>${getTamilType(type)}</h3>
+                    </div>
+                    ${places.map(place => `
+                        <div class="place-item">
+                            <h4>${place.name}</h4>
+                            <p>${place.address}</p>
+                            ${place.phone ? `<a href="tel:${place.phone}" class="action-btn"><i class="fas fa-phone"></i></a>` : ''}
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${place.lat},${place.lng}" 
+                               target="_blank" class="action-btn">
+                               <i class="fas fa-directions"></i>
+                            </a>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+
+        function getIconClass(type) {
+            const icons = {
+                hospital: 'fas fa-hospital',
+                police: 'fas fa-shield-alt',
+                pharmacy: 'fas fa-prescription-bottle',
+                embassy: 'fas fa-landmark'
+            };
+            return icons[type] || 'fas fa-question-circle';
+        }
+
+        function getTamilType(type) {
+            const tamilTypes = {
+                hospital: 'மருத்துவமனை',
+                police: 'போலீஸ்',
+                pharmacy: 'மருந்தகம்',
+                embassy: 'தூதரகம்'
+            };
+            return tamilTypes[type] || type;
+        }
+
+        function showError(error) {
+            alert(`இடத்தை பெறுவதில் பிழை: ${error.message}`);
+        }
+    </script>
+</body>
+</html>

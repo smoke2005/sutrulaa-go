@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>AI பயண திட்டம் உருவாக்கி</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/sutrulaa.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Caveat', cursive, sans-serif;
+    }
+    .container {
+      background: rgba(255,255,255,0.55);
+      max-width: 480px;
+      margin: 48px auto 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,128,128,0.10);
+      padding: 2.5rem 2rem 2rem 2rem;
+      position: relative;
+      backdrop-filter: blur(12px) saturate(160%) contrast(110%);
+      -webkit-backdrop-filter: blur(12px) saturate(160%) contrast(110%);
+    }
+    .container.large {
+      max-width: 1200px;
+      width: 98vw;
+      margin: 24px auto 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,128,128,0.10);
+      padding: 2.5rem 2rem 2rem 2rem;
+      position: relative;
+      background: rgba(255,255,255,0.45);
+      backdrop-filter: blur(18px) saturate(180%) contrast(120%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%) contrast(120%);
+    }
+    .top-image-banner {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto 2rem auto;
+      border-radius: 18px 18px 0 0;
+      overflow: hidden;
+      height: 260px;
+      box-shadow: 0 4px 24px rgba(0,128,128,0.10);
+      display: none;
+    }
+    .container.large + .top-image-banner {
+      display: block;
+    }
+    .top-image-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .itinerary-flex {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .itinerary-left {
+      flex: 2 1 0;
+      min-width: 0;
+      max-width: 70%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .itinerary-right {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 30%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .ai-itinerary-font {
+      font-family: 'Caveat', cursive, sans-serif;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      padding: 1rem 1.2rem;
+      background-color: rgba(255,255,255,0.85);
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      min-height: 220px;
+      max-height: 440px;
+      overflow-y: auto;
+    }
+    .calendar-card, .summary-card {
+      background: rgba(224,247,250,0.85);
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,128,128,0.07);
+      padding: 1.1rem 1rem 1rem 1.2rem;
+      color: #006d6d;
+      font-size: 1rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .summary-card ul {
+      margin: 0.5rem 0 0 0;
+      padding-left: 1.2rem;
+    }
+    .summary-card li {
+      margin-bottom: 0.5rem;
+    }
+    .timeline {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 2rem;
+      gap: 18px;
+    }
+    .timeline-step {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #e0f7fa;
+      color: #008080;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.3rem;
+      border: 3px solid #e0f7fa;
+      transition: background 0.3s, border 0.3s, color 0.3s;
+    }
+    .timeline-step.active {
+      background: #009688;
+      color: #fff;
+      border: 3px solid #009688;
+    }
+    .timeline-bar {
+      width: 36px;
+      height: 4px;
+      background: #b2dfdb;
+      border-radius: 2px;
+    }
+    .form-step {
+      display: none;
+    }
+    .form-step.active {
+      display: block;
+    }
+    label {
+      color: #006d6d;
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+    }
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      padding: 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #b2dfdb;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      background: #f0fdfa;
+      color: #006d6d;
+    }
+    .checkbox-group {
+      margin-bottom: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .checkbox-group label {
+      font-weight: 400;
+      color: #008080;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    button[type="submit"], .next-btn {
+      background: linear-gradient(90deg, #009688 60%, #26c6da 100%);
+      color: #fff;
+      border: none;
+      border-radius: 24px;
+      padding: 0.8rem 2.2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 1.2rem;
+      box-shadow: 0 2px 8px rgba(0,128,128,0.10);
+      transition: background 0.2s;
+    }
+    button[type="submit"]:hover, .next-btn:hover {
+      background: linear-gradient(90deg, #26c6da 60%, #009688 100%);
+    }
+    .ai-itinerary-font {
+      font-family: 'Caveat', cursive, sans-serif;
+      white-space: pre-wrap;
+      line-height: 1.8;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      padding: 1rem;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .ai-itinerary-font strong {
+      font-weight: bold;
+      color: #333;
+    }
+    .ai-itinerary-font em {
+      font-style: italic;
+      color: #666;
+    }
+    .ai-itinerary-font ul {
+      padding-left: 1.2rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .ai-itinerary-font li {
+      margin-bottom: 0.5rem;
+    }
+    /* Calendar styles */
+    .calendar-card {
+      background: #e0f7fa;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,128,128,0.07);
+      padding: 1.1rem 1rem 1rem 1.2rem;
+      color: #006d6d;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .calendar-table th, .calendar-table td {
+      width: 32px;
+      height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      font-size: 1rem;
+    }
+    .calendar-table th {
+      color: #009688;
+      font-weight: bold;
+      background: none;
+    }
+    .calendar-table td {
+      background: none;
+      color: #006d6d;
+    }
+    .calendar-table td.trip-day {
+      background: #009688;
+      color: #fff;
+      font-weight: bold;
+    }
+    .calendar-table td.today {
+      border: 2px solid #26c6da;
+    }
+    .itinerary-header-box {
+      background: #e0f7fa;
+      color: #006d6d;
+      border-radius: 18px;
+      padding: 0.85rem 1.8rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 1rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0,128,128,0.10);
+      letter-spacing: 0.5px;
+      border: 2px solid #b2dfdb;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  
+  <!-- Timeline always on top -->
+  <div class="timeline">
+    <div class="timeline-step active" id="step1-circle">1</div>
+    <div class="timeline-bar"></div>
+    <div class="timeline-step" id="step2-circle">2</div>
+    <div class="timeline-bar"></div>
+    <div class="timeline-step" id="step3-circle">3</div>
+  </div>
+
+
+  <!-- Wide Chennai image banner (only for step 2) -->
+  <div class="top-image-banner" id="topImageBanner">
+    <img src="{{ url_for('static', filename='images/chennai-banner.jpeg') }}" alt="Chennai" id="bannerImg"/>
+  </div>
+  
+  <div class="container" id="mainContainer">
+    <!-- Step 1: Form -->
+    <form id="tripFormStep1" class="form-step active">
+      <label for="place_name">இடத்தின் பெயர்:</label>
+      <input type="text" id="place_name" name="place_name" placeholder="எ.கா., சென்னை" required>
+
+      <label for="start_date">பயண தொடங்கும் தேதி:</label>
+      <input type="date" id="start_date" name="start_date" required>
+
+      <label for="days">நாட்களின் எண்ணிக்கை:</label>
+      <input type="number" id="days" name="days" min="1" required>
+
+      <label for="interests">உங்கள் விருப்பங்களைத் தேர்ந்தெடுக்கவும்:</label>
+      <select id="interests" name="interests" multiple required>
+        <option value="historical">வரலாற்று தளங்கள்</option>
+        <option value="nature">இயற்கை & பூங்காக்கள்</option>
+        <option value="food">உணவு & உணவகங்கள்</option>
+        <option value="shopping">ஷாப்பிங்</option>
+        <option value="adventure">சாகசம்</option>
+        <option value="art">கலை & கலாச்சாரம்</option>
+        <option value="beaches">கடற்கரைகள்</option>
+      </select>
+
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="consider" value="weather"> Weather</label>
+        <label><input type="checkbox" name="consider" value="distance"> Distance</label>
+        <label><input type="checkbox" name="consider" value="budget"> Budget</label>
+        <label><input type="checkbox" name="consider" value="safety"> Safety</label>
+      </div>
+
+      <button type="button" class="next-btn" id="toStep2Btn">Generate</button>
+    </form>
+
+    <!-- Step 2: Itinerary Output -->
+    <div id="tripFormStep2" class="form-step">
+      <div class="itinerary-flex">
+        <!-- Left: Itinerary Text -->
+        <div class="itinerary-left">
+          <div id="itineraryTitle" class="itinerary-header-box">உங்கள் திட்டம்:</div>
+          <div id="itineraryText" class="ai-itinerary-font">திட்டம் உருவாக்கப்படுகிறது...</div>
+          <div id="itineraryOlaList"></div>
+        </div>
+        <!-- Right: Calendar and Summary -->
+        <div class="itinerary-right">
+          <div class="calendar-card">
+            <strong>Calendar</strong>
+            <div id="calendarContainer"></div>
+            <!-- Map image link below calendar -->
+            <a id="gmapLink" href="#" target="_blank" style="display:block;margin-top:1.2rem;">
+              <img src="{{ url_for('static', filename='images/map.jpeg') }}" alt="Open in Google Maps" style="width:100%;border-radius:12px;box-shadow:0 2px 8px rgba(0,128,128,0.07);" />
+            </a>
+          </div>
+          <div class="summary-card">
+            <strong>Trip Summary</strong>
+            <ul id="summaryList">
+              <li>Day 1: Exploring Chennai's Heritage and Museums</li>
+              <li>Day 2: Temples and Artistic Pursuits near Mahabalipuram</li>
+              <li>Day 3: Kanchipuram's Silk and Temples</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="next-btn" id="toStep1Btn" style="background:#b2dfdb;color:#008080;margin-top:2rem;">Back</button>
+    </div>
+
+    <!-- Floating Ola Button (top right) -->
+    <div id="olaFloatingBtn" style="position:fixed;top:32px;right:32px;z-index:1000;">
+      <button onclick="toggleOlaDropdown()" style="background:#009688;color:#ffffff;font-weight:bold;padding:14px 24px;border:none;border-radius:50%;box-shadow:0 2px 8px rgba(242, 240, 240, 0.15);font-size:1.5rem;cursor:pointer;">
+        🚕 
+      </button>
+      <div id="olaDropdown" style="display:none;position:absolute;top:40px;right:0;background:white;border:1px solid #ccc;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.12);min-width:220px;max-width:320px;max-height:400px;overflow-y:auto;">
+        <div id="olaDropdownList" style="padding:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/it_ola.js') }}"></script>
+  <script>
+    // Timeline step switching
+    function setStep(step) {
+      document.getElementById('step1-circle').classList.toggle('active', step >= 1);
+      document.getElementById('step2-circle').classList.toggle('active', step >= 2);
+      document.getElementById('step3-circle').classList.toggle('active', step >= 3);
+      document.getElementById('tripFormStep1').classList.toggle('active', step === 1);
+      document.getElementById('tripFormStep2').classList.toggle('active', step === 2);
+
+      // Toggle container size and banner
+      const container = document.getElementById('mainContainer');
+      const banner = document.getElementById('topImageBanner');
+      if (step === 2) {
+        container.classList.add('large');
+        banner.style.display = 'block';
+      } else {
+        container.classList.remove('large');
+        banner.style.display = 'none';
+      }
+    }
+
+    // Helper: Generate calendar for the month, highlight trip days
+    function renderCalendar(startDateStr, numDays) {
+      const container = document.getElementById('calendarContainer');
+      container.innerHTML = '';
+      if (!startDateStr || !numDays) return;
+
+      const startDate = new Date(startDateStr);
+      const year = startDate.getFullYear();
+      const month = startDate.getMonth();
+      const today = new Date();
+      // Calculate trip days
+      const tripDays = [];
+      for (let i = 0; i < numDays; i++) {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + i);
+        tripDays.push(d.getDate());
+      }
+      // Calendar header
+      const daysShort = ['S','M','T','W','T','F','S'];
+      let html = '<table class="calendar-table"><tr>';
+      for (let d of daysShort) html += `<th>${d}</th>`;
+      html += '</tr><tr>';
+      // First day of month
+      const firstDay = new Date(year, month, 1).getDay();
+      for (let i = 0; i < firstDay; i++) html += '<td></td>';
+      // Days in month
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isTrip = tripDays.includes(d);
+        const isToday = (year === today.getFullYear() && month === today.getMonth() && d === today.getDate());
+        html += `<td class="${isTrip ? 'trip-day' : ''} ${isToday ? 'today' : ''}">${d}</td>`;
+        if ((firstDay + d) % 7 === 0) html += '</tr><tr>';
+      }
+      html += '</tr></table>';
+      container.innerHTML = html;
+    }
+
+    document.getElementById('toStep2Btn').addEventListener('click', async function() {
+      // Validate form
+      const place = document.getElementById("place_name").value.trim();
+      const days = document.getElementById("days").value;
+      const startDate = document.getElementById("start_date").value;
+      const interests = Array.from(document.getElementById("interests").selectedOptions);
+      if (!place || !days || interests.length === 0 || !startDate) {
+        alert("Fill all fields!");
+        return;
+      }
+      setStep(2);
+
+      // Set Google Maps link for the searched place
+      const gmapLink = document.getElementById("gmapLink");
+      const placeQuery = encodeURIComponent(place);
+      gmapLink.href = `https://www.google.com/maps/search/?api=1&query=${placeQuery}`;
+
+      // Prepare payload
+      const consider = Array.from(document.querySelectorAll('input[name="consider"]:checked')).map(cb => cb.value);
+      const payload = {
+        user_id: "testuser123",
+        days: parseInt(days),
+        interests: interests.map(opt => opt.value),
+        place_name: place,
+        consider: consider,
+        start_date: startDate
+      };
+
+      // Show loading
+      document.getElementById("itineraryText").innerHTML = "திட்டம் உருவாக்கப்படுகிறது...";
+      document.getElementById("itineraryOlaList").innerHTML = "";
+      document.getElementById("summaryList").innerHTML = "";
+
+      // Render calendar immediately (before fetch)
+      renderCalendar(startDate, days);
+
+      // Fetch itinerary
+      try {
+        const res = await fetch("http://127.0.0.1:5000/generate-itinerary", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        updateOlaDropdown(data.ola_links);
+
+        // Use generated data for title and itinerary
+        document.getElementById("itineraryTitle").textContent = (data.city || data.place_name || "உங்கள் திட்டம்:") + " - " + (data.date || startDate);
+
+        document.getElementById("itineraryText").innerHTML = formatItineraryText(data.itinerary);
+
+        // Optionally, re-render calendar if backend returns different start_date/days
+        if (data.start_date && data.days) {
+          renderCalendar(data.start_date, data.days);
+        }
+
+        // --- Dynamically generate summary list from backend ---
+        const summaryList = document.getElementById("summaryList");
+        summaryList.innerHTML = "";
+        if (data.structured_itinerary) {
+          let dayNum = 1;
+          for (const day in data.structured_itinerary) {
+            // Find first place for the day
+            let firstPlace = "";
+            for (const slot in data.structured_itinerary[day]) {
+              if (data.structured_itinerary[day][slot].length > 0) {
+                firstPlace = data.structured_itinerary[day][slot][0].name;
+                break;
+              }
+            }
+            const li = document.createElement('li');
+            li.textContent = `Day ${dayNum}: ${firstPlace}`;
+            summaryList.appendChild(li);
+            dayNum++;
+          }
+        }
+
+        const itineraryOlaListDiv = document.getElementById("itineraryOlaList");
+        itineraryOlaListDiv.innerHTML = "";
+        const itinerary = data.structured_itinerary;
+        for (const day in itinerary) {
+          const dayHeader = document.createElement('h3');
+          dayHeader.textContent = day;
+          itineraryOlaListDiv.appendChild(dayHeader);
+          for (const slot in itinerary[day]) {
+            const slotHeader = document.createElement('h4');
+            slotHeader.textContent = slot;
+            itineraryOlaListDiv.appendChild(slotHeader);
+            itinerary[day][slot].forEach(place => {
+              const placeDiv = document.createElement('div');
+              placeDiv.textContent = place.name + " ";
+              if (typeof place.lat === "number" && typeof place.lng === "number") {
+                addOlaButtonForPlace(place.name, place.lat, place.lng, placeDiv);
+              } else {
+                const warn = document.createElement('span');
+                warn.textContent = "(ஓலா இடம் தரவுகள் இல்லை)";
+                warn.style.color = "red";
+                placeDiv.appendChild(warn);
+              }
+              itineraryOlaListDiv.appendChild(placeDiv);
+            });
+          }
+        }
+      } catch (error) {
+        document.getElementById("itineraryText").innerHTML = "திட்டத்தை பெற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.";
+        document.getElementById("itineraryOlaList").innerHTML = "";
+      }
+    });
+
+    document.getElementById('toStep1Btn').addEventListener('click', function() {
+      setStep(1);
+    });
+
+    function formatItineraryText(text) {
+      let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // bold
+        .replace(/\*(.*?)\*/g, "<em>$1</em>")             // italic
+        .replace(/\n{2,}/g, "</p><p>")                    // double line breaks to paragraph
+        .replace(/\n/g, "<br>");                          // single line breaks
+
+      formatted = formatted.replace(/<p>(\s*\* .+?)<\/p>/g, (match, p1) => {
+        const items = p1.split(/\n\s*\* /).map((item, idx) => {
+          if (idx === 0 && item.startsWith("* ")) item = item.slice(2);
+          return `<li>${item.trim()}</li>`;
+        });
+        return `<ul>${items.join("")}</ul>`;
+      });
+
+      return `<p>${formatted}</p>`;
+    }
+
+    function toggleOlaDropdown() {
+      const dropdown = document.getElementById('olaDropdown');
+      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.addEventListener('click', function(event) {
+      const btn = document.getElementById('olaFloatingBtn');
+      if (!btn.contains(event.target)) {
+        document.getElementById('olaDropdown').style.display = 'none';
+      }
+    });
+
+    function updateOlaDropdown(olaLinks) {
+      const dropdownList = document.getElementById('olaDropdownList');
+      dropdownList.innerHTML = '';
+      
+      olaLinks.forEach(link => {
+        const a = document.createElement('a');
+        a.href = link.link;
+        a.target = "_blank";
+        a.style.display = "block";
+        a.style.padding = "8px 0";
+        a.style.color = "#0d6efd";
+        a.style.textDecoration = "none";
+        a.textContent = `🚕 ${link.name}`;
+        dropdownList.appendChild(a);
+      });
+    }
+
+    // REMOVE THIS BLOCK - it references a non-existent form and causes errors
+    // document.getElementById("tripForm").addEventListener("submit", async (e) => {
+    //   ...
+    // });
+  </script>
+</body>
+</html>

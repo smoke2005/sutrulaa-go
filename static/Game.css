@@ -1,0 +1,245 @@
+body {
+    margin: 0;
+    background: #1a1a1a;
+    font-family: Arial, sans-serif;
+}
+
+#gameContainer {
+    width: 480px;
+    height: 960px;
+    margin: 40px auto;
+    border: 3px solid #333;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #222;
+    position: relative;
+    box-shadow: 0 0 24px #000a;
+}
+
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.7);
+    z-index: 10;
+}
+
+#homeBtn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2em;
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+#title {
+    color: #fff;
+    font-size: 1.5em;  /* Decreased font size */
+    font-weight: bold;
+    margin: 0 auto;
+    letter-spacing: 2px;
+}
+
+.resourceBar {
+    color: #fff;
+    font-size: 1.1em;
+    margin-right: 16px;
+    background: rgba(0,0,0,0.5);
+    padding: 8px 16px;
+    border-radius: 12px;
+}
+
+#frontScreen {
+    width: 100%;
+    height: 100%;
+    background: url('temple-bg.jpg') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 2;
+}
+
+#frontScreen h1 {
+    color: #fff;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 8px #000;
+}
+
+#playBtn {
+    padding: 18px 48px;
+    font-size: 1.5em;
+    background: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 16px #0005;
+}
+
+#sceneScreen {
+    width: 100%;
+    height: 100%;
+    background: url('livingroom-bg.jpg') no-repeat center center/cover;
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 3;
+}
+
+.scene-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+    z-index: 1;
+}
+
+.character-left, .character-right {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.character-left {
+    left: -35px;  /* Negative value to hide part of the image */
+    bottom: 200px;
+    z-index: 4;
+}
+
+.character-left .character-img {
+    width: 400px;
+    height: 400px;
+    object-fit: contain;
+}
+
+.character-right {
+    right: -15px;
+    bottom: 400px;
+    flex-direction: row-reverse;
+    z-index: 4;
+    display: flex;
+}
+
+.character-right .character-img {
+    width: 350px;
+    height: 350px;
+}
+
+.text-box {
+    width: 300px;
+    min-height: 60px;
+    background: rgba(255,255,255,0.95);
+    padding: 18px 16px;
+    margin: 0 12px;
+    color: #000;
+    font-size: 1.2em;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+.choices {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+
+.choice-btn {
+    width: 200px;
+    height: 50px;
+    background-color: #D2691E;  /* Earthy, warm color (chocolate) */
+    font-family: 'Noto Sans Tamil', Arial, sans-serif;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #0003;
+    transition: background 0.2s;
+    margin: 10px 0;
+}
+
+.choice-btn:hover {
+    background-color: #A0522D;  /* Darker earthy tone for hover (sienna) */
+}
+
+.narration-img {
+    width: 90%;  /* Slightly increase the width */
+    height: auto;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    object-fit: contain;
+}
+
+#transitionVideo {
+    display: none; /* Initially hidden */
+    width: 100%;   /* Full width of the container */
+    height: 100%;  /* Maintain aspect ratio */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;  /* Ensure it appears above other elements */
+    background-color: black; /* Optional: to ensure a background if video doesn't cover entire area */
+}
+
+#videoText {
+    display: none; /* Initially hidden */
+    position: absolute;
+    bottom: 500px;  /* Moved lower */
+    left: 50%;
+    transform: translateX(-50%);
+    color: #0d0d0d;
+    font-size: 2em;
+    z-index: 101; /* Ensure it appears above the video */
+    text-shadow: 2px 2px 8px #000;
+}
+
+.character-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+}
+
+#centerImage {
+    max-width: 80%;
+    max-height: 80%;
+    margin: 0 auto;
+    display: block;
+}
+
+.scene-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

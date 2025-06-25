@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>பயண பதிவு ✈️</title>
+  <style>
+    /* Luxury Theme Variables */
+    :root {
+      --teal-dark: #116466;
+      --teal-main: #2C7865;
+      --teal-light: #A7FFEB;
+      --teal-accent: #43E6D1;
+      --teal-bg: #E0F7FA;
+      --white: #ffffff;
+      --shadow: 0 4px 24px rgba(44,120,101,0.10);
+    }
+
+    /* Base Styles */
+    body {
+      background: var(--teal-bg);
+      color: var(--teal-dark);
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--white);
+      border-bottom: 2px solid var(--teal-accent); /* <-- add or update this line */
+      padding: 18px 0 10px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow);
+    }
+
+    .header-content {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, var(--teal-main), var(--teal-accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      text-decoration: none;
+    }
+
+    .nav-icons a {
+      color: var(--teal-main) !important;
+      font-size: 28px;
+      margin-left: 12px;
+      transition: color 0.2s;
+    }
+    .nav-icons a:hover {
+      color: var(--teal-accent) !important;
+    }
+
+    /* Post Grid */
+    .post-grid {
+      max-width: 700px;
+      margin: 50px auto 30px; /* was 120px or more, reduce this value for less space */
+      padding: 0 20px;
+    }
+
+    .post-card {
+      background: var(--white);
+      border: 1.5px solid var(--teal-accent);
+      border-radius: 18px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .post-card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: 0 8px 32px rgba(44,120,101,0.18);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      padding: 18px 18px 0 18px;
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      background: var(--teal-accent);
+      color: var(--teal-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 22px;
+      margin-right: 14px;
+      box-shadow: 0 2px 8px rgba(44,120,101,0.10);
+    }
+
+    .username {
+      font-weight: 700;
+      color: var(--teal-main);
+      font-size: 1.1rem;
+      background: none;
+      -webkit-background-clip: unset;
+      -webkit-text-fill-color: unset;
+    }
+
+    .post-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 0 0 12px 12px;
+      margin-top: 14px;
+      margin-bottom: 10px;
+      background: var(--teal-light);
+    }
+
+    .post-actions {
+      padding: 0 18px 0 18px;
+      display: flex;
+      gap: 18px;
+      font-size: 26px;
+      align-items: center;
+    }
+
+    .like-button {
+      background: none;
+      border: none;
+      color: var(--teal-main);
+      cursor: pointer;
+      transition: transform 0.2s, color 0.2s;
+      font-size: 1.5rem;
+    }
+    .like-button:hover {
+      transform: scale(1.2);
+      color: var(--teal-accent);
+    }
+
+    .post-likes {
+      font-weight: 600;
+      padding: 0 18px;
+      margin-bottom: 8px;
+      color: var(--teal-dark);
+    }
+
+    .post-caption {
+      padding: 0 18px 8px;
+      color: var(--teal-dark);
+    }
+
+    .post-time {
+      color: var(--teal-main);
+      font-size: 0.95rem;
+      padding: 0 18px 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Comment Section */
+    .comments-container {
+      padding: 0 18px 18px;
+      margin-top: 8px;
+    }
+
+    .comment {
+      display: flex;
+      align-items: flex-start;
+      margin: 8px 0;
+    }
+
+    .comment-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      margin-right: 12px;
+      background: var(--teal-light);
+      color: var(--teal-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+
+    .comment-content {
+      flex-grow: 1;
+      background: var(--teal-bg);
+      border-radius: 8px;
+      padding: 6px 12px;
+    }
+
+    .comment-user {
+      font-weight: 600;
+      color: var(--teal-main);
+      margin-right: 8px;
+    }
+
+    .comment-text {
+      color: var(--teal-dark);
+    }
+
+    .comment-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 4px;
+      color: var(--teal-accent);
+      font-size: 0.95rem;
+    }
+
+    .comment-like {
+      color: var(--teal-main);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .comment-like:hover {
+      color: var(--teal-accent);
+    }
+
+    .comment-input-container {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .comment-input {
+      flex-grow: 1;
+      background: var(--teal-bg);
+      border: 1px solid var(--teal-accent);
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: var(--teal-dark);
+      font-size: 1rem;
+      transition: border 0.2s;
+    }
+    .comment-input:focus {
+      outline: none;
+      border-color: var(--teal-main);
+    }
+
+    .comment-post {
+      background: var(--teal-main);
+      border: none;
+      color: var(--white);
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      padding: 6px 18px;
+      opacity: 0.85;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .comment-post.active,
+    .comment-post:hover {
+      opacity: 1;
+      background: var(--teal-accent);
+    }
+
+    /* Upload Button */
+    .upload-container {
+      /* Remove position: fixed, bottom, right, z-index */
+      margin: 100px auto 0 auto; /* increased from 64px to 90px to clear the header */
+      max-width: 700px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 80px; /* just below header */
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      justify-content: center;
+      align-items: flex-start; /* align to top */
+      z-index: 2000;
+      background: rgba(0,0,0,0.18);
+    }
+    .modal[style*="display: flex"] {
+      display: flex !important;
+    }
+    .upload-button {
+      background: linear-gradient(135deg, var(--teal-main), var(--teal-accent));
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .upload-button:hover {
+      transform: rotate(10deg) scale(1.08);
+      background: linear-gradient(135deg, var(--teal-accent), var(--teal-main));
+    }
+
+    /* Modal */
+    .modal-content {
+      background: var(--white);
+      border: 2px solid var(--teal-accent);
+      border-radius: 16px;
+      padding: 24px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+      position: relative;
+      box-shadow: var(--shadow);
+      animation: zoomIn 0.4s;
+    }
+
+    .close {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      font-size: 28px;
+      cursor: pointer;
+      color: var(--teal-main);
+    }
+
+    .upload-label {
+      display: block;
+      padding: 30px;
+      border: 2px dashed var(--teal-accent);
+      border-radius: 12px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      background: var(--teal-bg);
+      color: var(--teal-main);
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .upload-label:hover {
+      background: var(--teal-light);
+    }
+
+    .preview-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none;
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      resize: vertical;
+      border: 1px solid var(--teal-accent);
+      background: var(--teal-bg);
+      color: var(--teal-dark);
+      font-size: 1rem;
+    }
+
+    .post-button {
+      background: var(--teal-main);
+      color: var(--white);
+      border: none;
+      padding: 12px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-top: 12px;
+      transition: background 0.3s;
+    }
+    .post-button:hover {
+      background: var(--teal-accent);
+    }
+    /* END OF CSS */
+  </style>
+
+<!-- Keep this original header section -->
+<header class="header">
+  <div class="header-content">
+    <a href="/" class="logo">பயண பதிவு</a>
+    <div class="nav-icons">
+      <a href="/main" style="font-size: 26px;">
+        <!-- Teal SVG house icon -->
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="vertical-align: middle;">
+          <path d="M3 11L12 4L21 11" stroke="#2C7865" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="7" y="13" width="10" height="7" fill="#43E6D1" stroke="#2C7865" stroke-width="2" stroke-linejoin="round"/>
+          <rect x="10" y="16" width="4" height="4" fill="#ffffff" stroke="#2C7865" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <!-- Removed the old emoji here -->
+      <!-- Removed upload-container from here -->
+    </div>
+  </div>
+</header>
+
+<!-- Upload button just below header, right-aligned -->
+<div class="upload-container">
+  <button class="upload-button" id="openUpload">+</button>
+</div>
+
+<div class="post-grid">
+  {% for post in posts %}
+  <div class="post-card" id="post-{{ post.id }}">
+    <div class="post-header">
+      <div class="user-avatar">👤</div>
+      <div class="username">
+        
+          {{ post.username }}
+        
+      </div>
+    </div>
+    <img src="{{ post.image_url }}" class="post-image">
+    <div class="post-actions">
+      <button class="like-button" onclick="likePost('{{ post.id }}', this)">❤️</button>
+      
+    </div>
+    <div class="post-likes">{{ post.likes }} விருப்பங்கள்</div>
+    <div class="post-caption">
+      <span class="username">
+        
+          {{ post.username }}
+        
+      </span> {{ post.caption }}
+    </div>
+    <div class="post-time">{{ post.timestamp.strftime('%B %d, %Y') }}</div>
+
+    <!-- Comment Section -->
+    <div class="comments-container">
+        <!-- Sample Comment (replace with dynamic content) -->
+        <div class="comment">
+            <div class="comment-avatar">👤</div>
+            <div class="comment-content">
+                <div>
+                    <span class="comment-user">
+                        
+                          {{ post.username}}
+                        
+                    <span class="comment-text">அழகான காட்சி! 🌄</span>
+                </div>
+                <div class="comment-actions">
+                    <span class="comment-time">2ம</span>
+                    <span class="comment-like">💖 12</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comment-input-container">
+            <input type="text" 
+                   class="comment-input" 
+                   placeholder="கருத்து சேர்க்கவும்..."
+                   oninput="this.nextElementSibling.classList.toggle('active', this.value.trim() !== '')">
+            <button class="comment-post">பதிவு</button>
+        </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Upload Modal -->
+<div id="uploadModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeUpload">&times;</span>
+    <form method="post" enctype="multipart/form-data" action="/upload" id="uploadForm">
+      <div class="upload-area">
+        <input type="file" name="image" id="fileInput" accept="image/png, image/jpeg" style="display: none;" required>
+        <label for="fileInput" class="upload-label">📸 புகைப்படத்தை பதிவேற்ற கிளிக் செய்யவும்</label>
+        <img id="previewImage" class="preview-image">
+        <textarea name="caption" placeholder="ஒரு விளக்கம் எழுதவும்..." required></textarea>
+      </div>
+      <button type="submit" class="post-button">பகிரவும்</button>
+    </form>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  // Modal control
+  document.getElementById('openUpload').onclick = function() {
+    document.getElementById('uploadModal').style.display = 'flex';
+  };
+  document.getElementById('closeUpload').onclick = function() {
+    document.getElementById('uploadModal').style.display = 'none';
+  };
+
+  // Image preview
+  document.getElementById('fileInput').onchange = function(event) {
+    const preview = document.getElementById('previewImage');
+    preview.src = URL.createObjectURL(event.target.files[0]);
+    preview.style.display = 'block';
+  };
+
+  // Add this comment functionality
+  document.querySelectorAll('.comment-post').forEach(button => {
+    button.addEventListener('click', function() {
+      const input = this.previousElementSibling;
+      if (input.value.trim()) {
+        addComment(input.value.trim());
+        input.value = '';
+        this.classList.remove('active');
+      }
+    });
+  });
+
+  function addComment(text) {
+    const commentContainer = document.querySelector('.comments-container');
+    const commentHTML = `
+      <div class="comment">
+        <div class="comment-avatar">👤</div>
+        <div class="comment-content">
+          <div>
+            <span class="comment-user">பயணி</span>
+            <span class="comment-text">${text}</span>
+          </div>
+          <div class="comment-actions">
+            <span class="comment-time">இப்போது</span>
+            <span class="comment-like">💖 0</span>
+          </div>
+        </div>
+      </div>
+    `;
+    commentContainer.insertAdjacentHTML('afterbegin', commentHTML);
+  }
+
+  // Update like functionality
+  async function likePost(postId, btn) {
+    btn.disabled = true;
+    try {
+      const response = await fetch(`/like/${postId}`, {method: 'POST'});
+      if (response.ok) {
+        const likesElement = btn.closest('.post-actions').nextElementSibling;
+        const currentLikes = parseInt(likesElement.textContent);
+        likesElement.textContent = `${currentLikes + 1} விருப்பங்கள்`;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    btn.disabled = false;
+  }
+
+  // Add Enter key support for comments
+  document.querySelectorAll('.comment-input').forEach(input => {
+    input.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && this.value.trim()) {
+        addComment(this.value.trim());
+        this.value = '';
+        this.nextElementSibling.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
+
+<!-- Add these script includes -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+
+
+
+<script>
+
+</script>

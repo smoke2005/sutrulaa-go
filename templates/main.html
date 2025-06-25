@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <title>SutrulaaGO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    body {
+      overscroll-behavior: none;
+      background-color: #f8fafc;
+    }
+    #floating-image {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+    #floating-image:hover {
+      transform: scale(1.08);
+    }
+  </style>
+</head>
+<body class="relative overflow-x-hidden font-sans">
+
+
+
+  <!-- Menu Button -->
+  <button id="menu-btn" class="fixed top-4 left-4 z-50 p-2 rounded-full bg-white text-teal-900 shadow-lg focus:outline-none">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M6 10a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4 0a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
+    </svg>
+  </button>
+
+  <!-- Top Navigation Bar (Visit Finland style) -->
+  <nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-lg shadow-md">
+    <a href="/" class="text-3xl font-extrabold text-[#208DA5] tracking-tight">SutrulaaGO</a>
+    <ul class="flex gap-8 text-lg font-semibold text-[#208DA5]">
+      <li>
+        <button onclick="window.location.href='/itinerary';" class="hover:text-[#00FFFF] transition focus:outline-none bg-transparent">
+          பயண திட்டம்
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='/travellog';" class="hover:text-[#00FFFF] transition focus:outline-none bg-transparent">
+          சுற்றுலா பதிவு
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='/game';" class="hover:text-[#00FFFF] transition focus:outline-none bg-transparent">
+          விளையாட்டுகள்
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='/emergency';" class="hover:text-[#00FFFF] transition focus:outline-none bg-transparent">
+          அவசர தொடர்புகள்
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='/wise';" class="hover:text-[#00FFFF] transition focus:outline-none bg-transparent">
+          நாணய மாற்றம்
+        </button>
+      </li>
+      <li>
+        <button onclick="window.location.href='/profile';" class="hover:text-[#00FFFF] transition focus:outline-none bg-transparent">
+          சுயவிவரம்
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section (Visit Finland style) -->
+  <section class="relative flex items-center justify-center min-h-[90vh] overflow-hidden" style="margin-top:64px;">
+    <!-- Video Background -->
+    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover z-0" style="object-fit: cover;">
+      <source src="{{ url_for('static', filename='videos/hero-bg.mp4') }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <!-- Overlay for readability -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-transparent z-10"></div>
+    <!-- Centered Content -->
+    <div class="relative z-20 flex flex-col items-center justify-center text-center w-full h-full">
+      <h1 class="text-5xl md:text-7xl font-extrabold text-white drop-shadow-lg mb-6" data-aos="fade-up">SutrulaaGO</h1>
+      <p class="text-2xl md:text-3xl text-white/90 mb-8 max-w-2xl" data-aos="fade-up" data-aos-delay="100">
+        உங்கள் தமிழ் பயண அனுபவத்தை மேம்படுத்துங்கள்!
+      </p>
+      <a href="#explore" class="inline-block px-8 py-4 bg-[#208DA5] text-white text-xl font-bold rounded-full shadow-lg hover:bg-[#00FFFF] hover:text-[#208DA5] transition-all duration-300">
+        ஆரம்பிக்கலாமா?
+      </a>
+    </div>
+  </section>
+
+
+  <!-- Explore Places -->
+  <section id="explore" class="max-w-6xl mx-auto px-4 py-16">
+    <h2 class="text-4xl font-bold text-[#208DA5] mb-10 text-center drop-shadow-lg">இடங்களை ஆராயுங்கள்</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <!-- Chennai Card -->
+      <div class="bg-white/80 rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition border-2 border-[#30B7BB]">
+        <img src="{{ url_for('static', filename='images/chennai.png') }}" class="w-full h-48 object-cover" alt="Chennai">
+        <div class="p-5 flex flex-col items-start">
+          <h3 class="text-2xl font-semibold text-[#208DA5] mb-2">சென்னை</h3>
+          <a href="/place/chennai"
+             class="mt-auto bg-[#208DA5] text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-[#00FFFF] hover:text-[#208DA5] transition">
+            ஆராயுங்கள்
+          </a>
+        </div>
+      </div>
+      <!-- Madurai Card -->
+      <div class="bg-white/80 rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition border-2 border-[#30B7BB]">
+        <img src="{{ url_for('static', filename='images/madurai.png') }}" class="w-full h-48 object-cover" alt="Madurai">
+        <div class="p-5 flex flex-col items-start">
+          <h3 class="text-2xl font-semibold text-[#208DA5] mb-2">மதுரை</h3>
+          <a href="/place/madurai"
+             class="mt-auto bg-[#208DA5] text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-[#00FFFF] hover:text-[#208DA5] transition">
+            ஆராயுங்கள்
+          </a>
+        </div>
+      </div>
+      <!-- Salem Card -->
+      <div class="bg-white/80 rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition border-2 border-[#30B7BB]">
+        <img src="{{ url_for('static', filename='images/salem.png') }}" class="w-full h-48 object-cover" alt="Salem">
+        <div class="p-5 flex flex-col items-start">
+          <h3 class="text-2xl font-semibold text-[#208DA5] mb-2">சேலம்</h3>
+          <a href="/place/salem"
+             class="mt-auto bg-[#208DA5] text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-[#00FFFF] hover:text-[#208DA5] transition">
+            ஆராயுங்கள்
+          </a>
+        </div>
+      </div>
+      <!-- Custom Search Card -->
+      <div class="bg-white/80 rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition border-2 border-[#30B7BB]">
+        <img src="{{ url_for('static', filename='images/custom_search.png') }}" class="w-full h-48 object-cover" alt="Custom Search">
+        <div class="p-5 flex flex-col items-start">
+          <h3 class="text-2xl font-semibold text-[#208DA5] mb-2">தனிப்பயன் தேடல்</h3>
+          <a href="/custom-search"
+             class="mt-auto bg-[#208DA5] text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-[#00FFFF] hover:text-[#208DA5] transition">
+            தேடல்
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Itinerary Section -->
+  <section class="w-full relative rounded-2xl overflow-hidden shadow-xl mb-8 flex items-center justify-center" style="height: 400px; background: linear-gradient(120deg, #e0f2fe 0%, #38bdf8 100%);">
+    <div class="flex flex-col items-center justify-center w-full h-full z-10">
+      <div class="mb-6">
+        <svg class="w-24 h-24 text-teal-400 drop-shadow-lg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="3" fill="none"/>
+          <path d="M24 12v12l8 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="text-4xl font-extrabold text-blue-900 mb-4">உங்கள் பயணத்தை திட்டமிடுங்கள்</h2>
+      <p class="text-lg text-blue-800 mb-8 max-w-xl text-center">
+        உங்கள் விருப்பங்களுக்கு ஏற்ப சிறந்த பயண திட்டங்களை உருவாக்குங்கள். இடங்களை தேர்வு செய்து, நேரத்தை நிர்ணயித்து, உங்கள் அனுபவத்தை சிறப்பாக மாற்றுங்கள்!
+      </p>
+      <a href="/itinerary"
+         class="px-10 py-5 bg-gradient-to-r from-teal-400 to-blue-500 text-white rounded-xl shadow-xl text-2xl font-bold flex items-center gap-3 hover:from-blue-500 hover:to-teal-400 transition-all">
+        <svg class="w-7 h-7 mr-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        பயண திட்டம் தொடங்குங்கள்
+      </a>
+    </div>
+  </section>
+
+  <!-- Sutrula Padhivu Section -->
+  <section class="w-full relative rounded-2xl overflow-hidden shadow-xl mb-16" style="height: 400px; background: linear-gradient(120deg, #ccfbf1 0%, #38bdf8 100%);">
+    <img src="{{ url_for('static', filename='images/sutrula-padhivu-main.png') }}" alt="Sutrula Padhivu" class="absolute inset-0 w-full h-full object-cover object-center opacity-90" />
+    <a href="/travellog"
+       class="absolute right-8 bottom-8 px-10 py-5 bg-white/70 backdrop-blur-lg rounded-xl border border-white/60 shadow-xl text-blue-900 text-2xl md:text-3xl font-extrabold flex items-center gap-3 hover:bg-white/90 transition-all"
+       style="box-shadow: 0 4px 32px 0 rgba(59,130,246,0.10); z-index:2;">
+      சுற்றுலா பதிவு
+    </a>
+  </section>
+
+  <!-- Games Panel -->
+  <section class="w-full relative rounded-2xl overflow-hidden shadow-xl mb-16 flex items-center justify-end" style="height: 400px;">
+    <img src="{{ url_for('static', filename='images/games-panel-bg.jpeg') }}" alt="Games" class="absolute inset-0 w-full h-full object-cover object-center" />
+    <div class="relative z-10 flex flex-col items-end justify-center w-2/3 h-full pr-32">
+      <div class="mb-6">
+        <svg class="w-24 h-24 text-teal-400 drop-shadow-lg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 48 48">
+          <rect x="8" y="14" width="32" height="20" rx="6" fill="none" stroke="currentColor" stroke-width="3"/>
+          <circle cx="18" cy="24" r="2.5" fill="currentColor"/>
+          <circle cx="30" cy="24" r="2.5" fill="currentColor"/>
+          <path d="M24 34v4" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2 class="text-4xl font-extrabold text-teal-900 mb-4 bg-white/80 px-4 py-2 rounded-lg">விளையாட்டுகள்</h2>
+      <p class="text-lg text-teal-800 mb-8 max-w-xl text-right bg-white/70 px-4 py-2 rounded-lg">
+        பயணத்தை மேலும் சுவாரஸ்யமாக்கும் தமிழ் விளையாட்டுகளை விளையாடுங்கள்! உங்கள் அறிவையும், மொழி திறனையும் மேம்படுத்துங்கள்.
+      </p>
+      <a href="/game"
+         class="px-10 py-5 bg-gradient-to-r from-teal-400 to-teal-600 text-white rounded-xl shadow-xl text-2xl font-bold flex items-center gap-3 hover:from-teal-600 hover:to-teal-400 transition-all">
+        <svg class="w-7 h-7 mr-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M5 12h14M12 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        விளையாட்டுகள் தொடங்குங்கள்
+      </a>
+    </div>
+  </section>
+
+  <!-- Emergency Services Panel (Teal, Centered, No BG Image) -->
+  <section class="w-full relative rounded-2xl overflow-hidden shadow-xl mb-16 flex items-center justify-center" style="height: 400px; background: linear-gradient(120deg, #ccfbf1 0%, #38bdf8 100%);">
+    <div class="relative z-10 flex flex-col items-center justify-center w-full max-w-3xl h-full px-4">
+      <div class="mb-6">
+        <svg class="w-24 h-24 text-teal-400 drop-shadow-lg" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="3" fill="none"/>
+          <path d="M24 16v10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="32" r="2.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2 class="text-5xl font-extrabold text-teal-900 mb-4 text-center">அவசர சேவைகள்</h2>
+      <p class="text-2xl font-bold text-teal-800 mb-8 max-w-2xl text-center">
+        பயணத்தின் போது அவசர நிலைமைகளில் உதவும் முக்கிய சேவைகள் மற்றும் தொடர்புகளைக் கண்டறியுங்கள்.
+      </p>
+      <a href="/emergency"
+         class="px-12 py-5 bg-white/40 backdrop-blur-md text-teal-800 rounded-2xl shadow-2xl text-2xl font-extrabold flex items-center gap-3 hover:bg-white/70 hover:text-teal-900 transition-all duration-300">
+        <svg class="w-7 h-7 mr-2" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M12 8v4m0 4h.01" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        அவசர சேவைகள் பார்க்க
+      </a>
+    </div>
+  </section>
+
+  <!-- Floating Chatbot Button -->
+  <a href="/chatbot" id="floating-image">
+    <img src="{{ url_for('static', filename='images/floating_image.png') }}" alt="Chatbot" style="width: 90px; height: 90px; border-radius: 50%; box-shadow: 0 4px 24px 0 rgba(59,130,246,0.15);">
+  </a>
+
+  <!-- AOS Script -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+
+  <!-- Sidebar Toggle Script -->
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+    });
+  </script>
+  <script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>தமிழ் கற்றல் விளையாட்டு</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/game.css') }}">
+</head>
+<body>
+    <div class="game-container">
+        <div class="level-info">
+            <span class="level">நிலை: <span id="currentLevel">1</span></span>
+            <span class="lives">❤️ <span id="livesCount">3</span></span>
+            <span class="streak">தொடர்: <span id="streakCount">0</span></span>
+        </div>
+
+        <div class="phrase-container">
+            <div id="localPhrase" class="local-phrase"></div>
+            <button class="audio-btn" id="playAudio">
+                <span>🔊</span>
+            </button>
+            <div class="options-container" id="options"></div>
+        </div>
+
+        <div id="achievementModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>வாழ்த்துக்கள்!</h2>
+                <div class="badge-container">
+                    <img id="badgeImage" src="" alt="Achievement Badge">
+                </div>
+                <p id="badgeTitle"></p>
+                <div id="achievementButtons" class="button-container">
+                    <!-- Buttons will be added dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio id="phraseAudio" src=""></audio>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>

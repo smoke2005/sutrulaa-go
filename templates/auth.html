@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <title>SutrulaaGO - {{ action.capitalize() }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="h-screen bg-[#f9f6f0] flex items-center justify-center relative"> <!-- Soft sandalwood background -->
+
+
+  <div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-lg"> <!-- Pure white background for form -->
+    <h2 class="text-center text-3xl font-semibold mb-6 text-teal-700">{{ action.capitalize() }} SutrulaaGO இல்</h2> <!-- Teal text -->
+
+    <form method="POST">
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-teal-700">மின்னஞ்சல்</label>
+        <input type="email" name="email" id="email" class="mt-1 block w-full px-3 py-2 border border-teal-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent" required>
+      </div>
+
+      {% if action == 'signup' %}
+      <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-teal-700">பெயர்</label>
+        <input type="text" name="name" id="name" class="mt-1 block w-full px-3 py-2 border border-teal-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent" required>
+      </div>
+      {% endif %}
+      
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-teal-700">கடவுச்சொல்</label>
+        <input type="password" name="password" id="password" class="mt-1 block w-full px-3 py-2 border border-teal-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent" required>
+      </div>
+
+      <div class="flex items-center justify-between space-x-2">
+        <button type="submit" class="w-full bg-teal-700 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600">சமர்ப்பிக்கவும்</button>
+      </div>
+    </form>
+
+    <div class="mt-4 text-center">
+      {% if action == 'signup' %}
+      <p>ஏற்கனவே கணக்கு உள்ளதா? <a href="/signin" class="text-teal-700">உள்நுழைய</a></p>
+      {% else %}
+      <p>கணக்கு இல்லையா? <a href="/signup" class="text-teal-700">பதிவு செய்ய</a></p>
+      {% endif %}
+    </div>
+  </div>
+  
+</body>
+</html>

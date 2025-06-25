@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <title>{{ place_name }} | SutrulaaGO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body class="min-h-screen font-sans transition-colors duration-300">
+  <!-- Debug: Show variable values -->
+ 
+
+  <!-- Top Navigation Bar -->
+  <!-- In the navigation bar section -->
+  <nav class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-4 bg-white/70 backdrop-blur-lg shadow-md dark:bg-gray-800/70">
+      <a href="/main" class="text-3xl font-extrabold text-[#208DA5] tracking-tight dark:text-[#00FFFF]">சுற்றுலாGO</a>
+      <ul class="flex gap-8 text-lg font-semibold text-[#208DA5] dark:text-gray-200">
+        
+        <li>
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                <span class="dark:hidden">🌙</span>
+                <span class="hidden dark:inline">☀️</span>
+            </button>
+        </li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section for Place -->
+  <section class="relative flex items-center justify-center min-h-[60vh] overflow-hidden" style="margin-top:64px;">
+    <img src="{{ url_for('static', filename='images/' + place_image) }}" alt="{{ place_name }}" class="absolute inset-0 w-full h-full object-cover z-0" style="object-fit: cover;">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-transparent z-10"></div>
+    <div class="relative z-20 flex flex-col items-center justify-center text-center w-full h-full">
+      <h1 class="text-5xl md:text-7xl font-extrabold text-white drop-shadow-lg mb-4" data-aos="fade-up">{{ place_name }}</h1>
+      <p class="text-2xl md:text-3xl text-white/90 mb-6 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+        {{ place_tagline }}
+      </p>
+      <a href="#details" class="inline-block px-8 py-4 bg-[#208DA5] text-white text-xl font-bold rounded-full shadow-lg hover:bg-[#00FFFF] hover:text-[#208DA5] transition-all duration-300">
+        மேலும் அறிக
+      </a>
+    </div>
+  </section>
+
+  <!-- Place Details Section (Immersive, Modern) -->
+  <section id="details" class="max-w-6xl mx-auto px-6 py-24 flex flex-col md:flex-row items-center gap-16 bg-transparent">
+    <div class="flex-1 flex justify-center">
+      <img src="{{ url_for('static', filename='images/' + place_thumb) }}"
+           alt="{{ place_name }}"
+           class="w-[28rem] h-[28rem] object-cover rounded-[3rem] shadow-2xl border-8 border-white ring-8 ring-[#208DA5] -mt-24 md:mt-0">
+    </div>
+    <div class="flex-1">
+      <h2 class="text-5xl font-extrabold text-[#208DA5] mb-8 tracking-tight leading-tight">{{ place_name }} பற்றி</h2>
+      <div class="description">
+          {{ place_description|safe }}
+      </div>
+      <div class="flex flex-wrap gap-4 mb-10">
+        {% for tag in place_tags %}
+          <span class="px-6 py-2 bg-[#00FFFF]/20 text-[#208DA5] rounded-full font-semibold text-lg shadow">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      <a href="{{ place_map_url }}" target="_blank"
+         class="inline-block px-10 py-4 bg-[#208DA5] text-white text-xl font-bold rounded-full shadow-lg hover:bg-[#00FFFF] hover:text-[#208DA5] transition-all duration-300 mb-4">
+        வரைபடத்தில் காண்க
+      </a>
+      <div class="flex gap-4 mt-4">
+        <a href="/360view/{{ place_name | lower }}"
+           class="inline-block px-8 py-4 bg-[#00b894] text-white text-lg font-bold rounded-full shadow-lg hover:bg-[#00FFFF] hover:text-[#208DA5] transition-all duration-300">
+          360° பார்வை
+        </a>
+        <a href="/itinerary?place={{ place_name | lower }}"
+           class="inline-block px-8 py-4 bg-[#fdcb6e] text-[#208DA5] text-lg font-bold rounded-full shadow-lg hover:bg-[#00FFFF] hover:text-[#208DA5] transition-all duration-300">
+          பயண திட்டம்
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="max-w-6xl mx-auto px-6 pb-16">
+    <h3 class="text-2xl font-bold text-[#208DA5] mb-6">புகைப்படங்கள்</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {% for img in place_gallery %}
+        <img src="{{ url_for('static', filename='images/' + img) }}" alt="புகைப்படம்" class="w-full h-64 object-cover rounded-xl shadow hover:scale-105 transition">
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Floating Weather Button -->
+  <button id="weather-btn"
+          class="fixed top-28 right-8 z-50 w-16 h-16 rounded-full bg-[#4E342E] flex items-center justify-center shadow-lg hover:bg-[#6D4C41] transition"
+          title="இந்நகரின் வானிலை பார்க்க"
+          onclick="fetchWeatherInfo('{{ place_key }}')">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="white">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 15a4 4 0 004 4h10a4 4 0 100-8 5.5 5.5 0 00-10.9 1.5A4 4 0 003 15z" />
+      </svg>
+  </button>
+  
+  <!-- Weather Modal -->
+  <div id="weather-modal"
+       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xs w-full relative">
+      <button onclick="closeWeatherModal()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+      <div id="weather-content" class="text-center text-lg text-[#208DA5]">
+        <!-- Weather info will be loaded here -->
+        <div class="flex justify-center mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#208DA5">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 15a4 4 0 004 4h10a4 4 0 100-8 5.5 5.5 0 00-10.9 1.5A4 4 0 003 15z" />
+          </svg>
+        </div>
+        <span>Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
+</body>
+</html>
+
+<script>
+function fetchWeatherInfo(city) {
+    const modal = document.getElementById('weather-modal');
+    const content = document.getElementById('weather-content');
+    modal.classList.remove('hidden');
+    content.innerHTML = '<span>Loading...</span>';
+    fetch(`/get-weather/${encodeURIComponent(city)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                content.innerHTML = `<span class="text-red-600">${data.error}</span>`;
+            } else {
+                content.innerHTML = `
+                  <div class="font-bold text-xl mb-2">${city} வானிலை</div>
+                  <div class="mb-1">🌡️ வெப்பநிலை: ${data.temperature}°C</div>
+                  <div class="mb-1">☁️ நிலை: ${data.weather}</div>
+                  <div class="mb-1">💧 ஈரப்பதம்: ${data.humidity}%</div>
+                  <div class="mb-1">🌬️ காற்று வேகம்: ${data.wind_speed} m/s</div>
+                  <div class="mb-1">☁️ மேகங்கள்: ${data.clouds}%</div>
+                `;
+            }
+        })
+        .catch(() => {
+            content.innerHTML = '<span class="text-red-600">Failed to fetch weather info.</span>';
+        });
+}
+function closeWeatherModal() {
+    document.getElementById('weather-modal').classList.add('hidden');
+}
+</script>
+
+<head>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --nav-bg: rgba(255, 255, 255, 0.7);
+        }
+        
+        .dark {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --nav-bg: rgba(26, 26, 26, 0.7);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .dark .dark\:text-\[\#00FFFF\] {
+            color: #00FFFF !important;
+        }
+    </style>
+    <script>
+        // Theme toggle logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check localStorage for theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+    </script>
+</head>

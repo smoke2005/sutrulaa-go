@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The 2 Wonders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='Game.css') }}">
+</head>
+<body>
+    <audio id="bgMusic" src="{{ url_for('static', filename='background-music.mp3') }}" loop></audio>
+    <div id="gameContainer">
+        <div id="header">
+            <button id="homeBtn" onclick="showFrontScreen()">🏠</button>
+            <div id="title">2 அதிசயங்கள்</div> <!-- Changed title to Tamil -->
+            <div class="resourceBar">
+                ⏰ <span id="time">72</span>h | ₹<span id="money">5000</span> | ★<span id="points">0</span>
+            </div>
+        </div>
+        <div id="frontScreen">
+            <h1>2 அதிசயங்கள்</h1> <!-- Changed title to Tamil -->
+            <button id="playBtn" onclick="startGame()">விளையாடு</button> <!-- Changed button text to Tamil -->
+        </div>
+        <div id="sceneScreen">
+            <img id="sceneBg" class="scene-bg" src="" alt="">
+            <div class="character-left" id="protagonistArea" style="display:none;">
+                <img id="protagonistImg" class="character-img" src="{{ url_for('static', filename='protagonist0.png') }}" alt="">
+            </div>
+            <div class="character-right" id="otherCharArea" style="display:none;">
+                <img id="otherCharImg" class="character-img" src="{{ url_for('static', filename='friend.png') }}" alt="">
+            </div>
+            <img id="narrationImg" class="narration-img" src="{{ url_for('static', filename='narration1.png') }}" alt="">
+            <div class="choices" id="choicesArea" style="display:none;">
+                <button class="choice-btn" id="choice1" onclick="chooseOption(1)">SutrulaaGO பயன்படுத்துங்கள்</button>
+                <button class="choice-btn" id="choice2" onclick="chooseOption(2)">தானாக திட்டமிடுங்கள்</button>
+            </div>
+        </div>
+        <video id="transitionVideo" src="{{ url_for('static', filename='traffic.mp4') }}" style="display:none;"></video>
+                <div id="sceneScreen2" style="display:none;">
+                    <img id="sceneBg2" class="scene-bg" src="{{ url_for('static', filename='bggg2.jpg') }}" alt="">
+                    <div class="character-left" id="protagonistArea2" style="display:none;">
+                        <img id="protagonistImg2" class="character-img" src="{{ url_for('static', filename='protagonist4.png') }}" alt="">
+                    </div>
+                    <div class="character-right" id="botArea" style="display:none;">
+                        <img id="botImg" class="character-img" src="{{ url_for('static', filename='bot1.png') }}" alt="">
+                    </div>
+                    <img id="narrationImg2" class="narration-img" src="" alt=""> <!-- Add this line -->
+                    <div class="choices" id="choicesArea2" style="display:none;">
+                        <button class="choice-btn" id="choice3" onclick="chooseOption2(1)">SutrulaaGO chatbot ஐ பயன்படுத்துங்கள்</button>
+                        <button class="choice-btn" id="choice4" onclick="chooseOption2(2)">விரும்பியபடி விட்டு விடுங்கள்</button>
+                    </div>
+                </div>
+                
+                <div id="sceneScreen3" style="display:none; position:absolute; width:100%; height:100%;">
+                    <img id="sceneBg3" class="scene-bg" src="{{ url_for('static', filename='maduraiblur1.png') }}" style="width:80%; height:80%; object-fit:contain; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">
+                </div> <!-- End of sceneScreen3 -->
+                
+                <div id="sceneScreen4" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%;">
+                    <img id="sceneBg4" class="scene-bg" src="{{ url_for('static', filename='leaderboard.jpg') }}" style="width:100%; height:100%; object-fit:cover;">
+                    <!-- Add any other elements you want for this screen -->
+                </div>
+               
+    </div>
+    <script>
+        let clickCount = 0;
+        let score = 0;
+
+        function showFrontScreen() {
+            document.getElementById('frontScreen').style.display = 'flex';
+            document.getElementById('sceneScreen').style.display = 'none';
+        }
+
+        function startGame() {
+            document.getElementById('frontScreen').style.display = 'none';
+            document.getElementById('sceneScreen').style.display = 'block';
+            document.getElementById('protagonistArea').style.display = 'block';
+            document.getElementById('protagonistImg').src = "{{ url_for('static', filename='protagonist0.png') }}";
+            document.getElementById('narrationImg').src = "{{ url_for('static', filename='narration1.png') }}";
+            document.getElementById('sceneScreen').onclick = handleSceneClick;
+            document.getElementById('bgMusic').play();  // Start background music
+        }
+
+        function handleSceneClick() {
+            clickCount++;
+            if (clickCount === 1) {
+                document.getElementById('narrationImg').src = "{{ url_for('static', filename='narration2.png') }}";
+            } else if (clickCount === 2) {
+                setTimeout(() => {
+                    document.getElementById('narrationImg').style.display = 'none';  // Hide narration2
+                    document.getElementById('protagonistImg').src = "{{ url_for('static', filename='protagonist1.png') }}";
+                }, 500);  // Delay of 500ms
+            } else if (clickCount === 3) {
+                setTimeout(() => {
+                    document.getElementById('otherCharArea').style.display = 'block';
+                }, 500);  // Delay of 500ms
+            } else if (clickCount === 4) {
+                setTimeout(() => {
+                    document.getElementById('protagonistImg').src = "{{ url_for('static', filename='protagonist2.png') }}";
+                }, 500);  // Delay of 500ms
+            } else if (clickCount === 5) {
+                setTimeout(() => {
+                    document.getElementById('otherCharImg').src = "{{ url_for('static', filename='friend2.png') }}";
+                }, 500);  // Delay of 500ms
+            } else if (clickCount === 6) {
+                setTimeout(() => {
+                    document.getElementById('protagonistImg').src = "{{ url_for('static', filename='protagonist3.png') }}";
+                    document.getElementById('otherCharArea').style.display = 'none';
+                    document.getElementById('choicesArea').style.display = 'flex';
+                }, 500);  // Delay of 500ms
+            }
+        }
+
+        function chooseOption(option) {
+            if (option === 1) {
+                score += 20;
+            } else if (option === 2) {
+                score += 5;
+            }
+            document.getElementById('points').textContent = score;
+            playTransitionVideo();  // Ensure this function is called
+        }
+
+        function playTransitionVideo() {
+            const video = document.getElementById('transitionVideo');
+            const videoText = document.getElementById('videoText');
+            video.style.display = 'block';
+            videoText.style.display = 'block';  // Show the text
+            video.play();
+            video.onended = function() {
+                video.style.display = 'none';
+                videoText.style.display = 'none';  // Hide the text
+                showSceneScreen2();
+            };
+        }
+
+        function showSceneScreen2() {
+            document.getElementById('sceneScreen').style.display = 'none';
+            document.getElementById('sceneScreen2').style.display = 'block';
+            document.getElementById('protagonistArea2').style.display = 'block';
+            document.getElementById('protagonistImg2').src = "{{ url_for('static', filename='protagonist3_5.png') }}";
+            document.getElementById('narrationImg2').src = "{{ url_for('static', filename='narration3.png') }}"; // <-- FIXED: use narrationImg2
+            document.getElementById('narrationImg2').style.display = 'block'; // <-- FIXED: use narrationImg2
+            document.getElementById('sceneScreen2').onclick = handleSceneClick2;
+            clickCount = 0;
+        }
+
+        function handleSceneClick2() {
+            clickCount++;
+            if (clickCount === 1) {
+                document.getElementById('narrationImg2').style.display = 'none';
+                document.getElementById('protagonistImg2').src = "{{ url_for('static', filename='protagonist4.png') }}";
+            } else if (clickCount === 2) {
+                document.getElementById('botArea').style.display = 'block';
+                document.getElementById('botImg').src = "{{ url_for('static', filename='bot1.png') }}";
+            } else if (clickCount === 3) {
+                document.getElementById('protagonistImg2').src = "{{ url_for('static', filename='protagonist5.png') }}";
+            } else if (clickCount === 4) {
+                document.getElementById('botImg').src = "{{ url_for('static', filename='bot2.png') }}";
+            } else if (clickCount === 5) {
+                document.getElementById('sceneScreen2').style.display = 'none';
+                document.getElementById('sceneScreen3').style.display = 'block';
+                document.getElementById('sceneScreen3').onclick = function() {
+                    document.getElementById('bgMusic').pause(); // Stop music
+                    document.getElementById('sceneScreen3').style.display = 'none';
+                    document.getElementById('sceneScreen4').style.display = 'block';
+                };
+            }
+        }
+
+        function chooseOption2(option) {
+            if (option === 1) {
+                document.getElementById('botImg').src = "{{ url_for('static', filename='bot1.png') }}";
+            }
+            // Handle other logic for option 2 if needed
+        }
+
+        window.onload = function() {
+            showFrontScreen();
+        };
+    </script>
+</body>
+</html>
+
+<div id="videoText">பயணிக்கிறீர்கள்</div>

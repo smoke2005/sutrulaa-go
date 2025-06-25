@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Selection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='menu.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="title-container">
+        <h1 class="techy-title">விளையாட்டுகள்</h1>
+    </div>
+    <div class="container">
+        <div class="game-card" onclick="window.location.href='/story-game'">
+            <div class="glass-effect">
+                <img src="{{ url_for('static', filename='story-icon.jpg') }}" alt="Story Game">
+                <h2>2 அதிசயங்கள்</h2>
+            </div>
+        </div>
+        <div class="game-card" onclick="window.location.href='/language-game'">
+            <div class="glass-effect">
+                <img src="{{ url_for('static', filename='language-icon.png') }}" alt="Language Game">
+                <h2>தமிழ் கற்றல்</h2>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

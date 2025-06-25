@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Wise Transactions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='wise.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Wise Virtual Wallet</h1>
+
+        <!-- Account Actions -->
+        <button onclick="registerWise()">Register for Wise</button>
+        <button onclick="fetchBalance()">Check Balance</button>
+        <button onclick="fetchExchangeRate()">Check Exchange Rate</button>
+        <button id="approveButton" style="display: none;" onclick="approveTransfer()">Approve Transfer</button>
+
+        <!-- Currency Exchange -->
+        <h2>Currency Exchange</h2>
+        <input type="text" id="fromCurrency" placeholder="From (USD)">
+        <input type="text" id="toCurrency" placeholder="To (EUR)">
+        <input type="number" id="amount" placeholder="Amount">
+        <button onclick="exchangeMoney()">Exchange Money</button>
+
+        <!-- Virtual Card -->
+        <h2>Virtual Card</h2>
+       
+        <button onclick="addToGPay()">Add Card to Google Pay</button>
+
+        <!-- Result Displays -->
+        <div id="virtual-card-result"></div>
+        <div id="balance-result"></div>
+        <div id="exchange-result"></div>
+        <div id="exchange-money-result"></div>
+        <div id="gpay-result"></div>
+    </div>
+
+    <script>
+        async function registerWise() {
+            let response = await fetch("/register_wise");
+            let data = await response.json();
+            alert(data.instructions + "\n" + data.link);
+        }
+
+        async function fetchBalance() {
+            try {
+                let response = await fetch("http://127.0.0.1:5000/balance");
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                let data = await response.json();
+
+                // Format nicely
+                const wallet = data.virtual_wallet;
+                let formatted = '<h3>💼 Virtual Wallet Balances</h3>';
+                formatted += '<table class="balance-table"><tr><th>Currency</th><th>Amount</th></tr>';
+
+                for (let currency in wallet) {
+                    formatted += `<tr><td>${currency}</td><td>${wallet[currency].toLocaleString()}</td></tr>`;
+                }
+                formatted += '</table>';
+
+                document.getElementById("balance-result").innerHTML = formatted;
+            } catch (error) {
+                console.error("Fetch error:", error);
+                document.getElementById("balance-result").innerText = `Error: ${error.message}`;
+            }
+        }
+
+        async function fetchExchangeRate() {
+            let fromCurrency = prompt("Enter source currency (e.g., USD):");
+            let toCurrency = prompt("Enter target currency (e.g., EUR):");
+            let response = await fetch(`/exchange_rate/${fromCurrency}/${toCurrency}`);
+            let data = await response.json();
+            document.getElementById("exchange-result").innerText = JSON.stringify(data, null, 2);
+        }
+
+        async function exchangeMoney() {
+            let fromCurrency = document.getElementById("fromCurrency").value;
+            let toCurrency = document.getElementById("toCurrency").value;
+            let amount = document.getElementById("amount").value;
+            let resultDiv = document.getElementById("exchange-money-result");
+            let approveButton = document.getElementById("approveButton");
+
+            try {
+                let response = await fetch(`/exchange/${fromCurrency}/${toCurrency}/${amount}`, { method: "POST" });
+                let data = await response.json();
+
+                if (!response.ok || !data.quote_details) {
+                    resultDiv.innerText = `Error: ${data.error || "Failed to get quote details"}`;
+                    approveButton.style.display = "none";
+                    return;
+                }
+
+                resultDiv.innerText = JSON.stringify(data.quote_details, null, 2);
+
+                if (data.quote_details.approve_url) {
+                    approveButton.style.display = "block";
+                    approveButton.dataset.url = data.quote_details.approve_url;
+                } else {
+                    approveButton.style.display = "none";
+                }
+
+            } catch (error) {
+                console.error("Error in exchangeMoney:", error);
+                resultDiv.innerText = "An unexpected error occurred.";
+                approveButton.style.display = "none";
+            }
+        }
+
+        async function approveTransfer() {
+            let approveButton = document.getElementById("approveButton");
+            let url = approveButton.dataset.url;
+
+            if (!url) {
+                alert("No approval URL found.");
+                return;
+            }
+
+            try {
+                let response = await fetch(url, { method: 'POST' });
+                let data = await response.json();
+                alert(data.message || `Transfer Failed: ${data.error}`);
+            } catch (error) {
+                alert("Approval request failed.");
+            }
+        }
+
+        async function createVirtualCard() {
+            let resultDiv = document.getElementById("virtual-card-result");
+
+            try {
+                let response = await fetch("/create_virtual_card", { method: "POST" });
+                let data = await response.json();
+
+                if (data.error) {
+                    resultDiv.innerText = `Error: ${data.error}`;
+                } else {
+                    resultDiv.innerText = "✅ Virtual Card Created Successfully!\n" + JSON.stringify(data.card_details, null, 2);
+                }
+            } catch (error) {
+                resultDiv.innerText = "Error creating virtual card.";
+                console.error("Error in createVirtualCard:", error);
+            }
+        }
+
+        async function addToGPay() {
+            let response = await fetch("/add_card_to_gpay");
+            let data = await response.json();
+            document.getElementById("gpay-result").innerHTML = `<a href="${data.gpay_link}" target="_blank">${data.instructions}</a>`;
+        }
+    </script>
+    <div id="google_translate_element" style="float:right; margin: 10px;"></div> 
+    <script type="text/javascript"> 
+      function googleTranslateElementInit() { 
+        new google.translate.TranslateElement({ 
+          pageLanguage: 'en', 
+          includedLanguages: 'en,ta', 
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE 
+        }, 'google_translate_element'); 
+      } 
+    </script> 
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
